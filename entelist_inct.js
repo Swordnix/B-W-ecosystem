@@ -17,7 +17,7 @@
       spriteImages.plant_1.src = ["https://drive.google.com/uc?id=1-hMjMIGny3l8zNrvARSCP8ganQhtEVrX", "purple_wood_locals.png"][alt]
       spriteImages.tentacles.src = ["https://drive.google.com/uc?id=1_j-7W2ulUZ7xGssSjH8jxVilGjv6XBvk", "purple_wood_locals.png"][alt]
       spriteImages.alien_1.src = ["https://drive.google.com/uc?id=1wD2iSMGc6EQWH-PTVbFflIl_PNWKs-32", "purple_wood_locals.png"][alt]
-      spriteImages.sylkens.src = "https://drive.google.com/file/d/1mcx1DKhDoF6JHrXqXopOZoMgndAwTe9W/view?usp=drive_link"
+      spriteImages.sylkens.src = "https://drive.google.com/uc?id=1mcx1DKhDoF6JHrXqXopOZoMgndAwTe9W"
       
   
         // Define the Drone object
