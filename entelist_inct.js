@@ -6,7 +6,8 @@
         p_w_l:new Image(),
         plant_1: new Image(),
         tentacles: new Image(),
-        alien_1: new Image()
+        alien_1: new Image(),
+        sylkens: new Image()
       };//spriteImages. .src = ["", "purple_wood_locals.png"][alt]
       var alt = 0;
       spriteImages.drone.src = ["https://drive.google.com/uc?export=view&id=1SZJdr1DLmJPu8un89te48m2q4jCK3iEN", "drone.png"][alt];
@@ -16,6 +17,7 @@
       spriteImages.plant_1.src = ["https://drive.google.com/uc?id=1-hMjMIGny3l8zNrvARSCP8ganQhtEVrX", "purple_wood_locals.png"][alt]
       spriteImages.tentacles.src = ["https://drive.google.com/uc?id=1_j-7W2ulUZ7xGssSjH8jxVilGjv6XBvk", "purple_wood_locals.png"][alt]
       spriteImages.alien_1.src = ["https://drive.google.com/uc?id=1wD2iSMGc6EQWH-PTVbFflIl_PNWKs-32", "purple_wood_locals.png"][alt]
+      spriteImages.sylkens.src = "https://drive.google.com/file/d/1mcx1DKhDoF6JHrXqXopOZoMgndAwTe9W/view?usp=drive_link"
       
   
         // Define the Drone object
@@ -432,6 +434,98 @@
             );
             };
         }
+
+// The locals
+function sylken(x, y) {
+    this.x = x;
+    this.y = y;
+    this.frameIndex = 0;
+    this.framesPerRow = 10;
+    this.frameWidth = 200;
+    this.frameHeight = 100;
+    this.animationSpeed = 200; // Milliseconds per frame
+    this.animationTimer = 0;
+    this.id = "Sylken";
+    this.killModeActivated = false;
+
+    // Update the local's animation
+    this.update = function() {
+        // Update animation timer
+        this.animationTimer += 16.67; // Approximate time between animation frames (60 FPS)
+        if (this.animationTimer >= this.animationSpeed) {
+            if (this.killModeActivated) {
+                if (physicsWorld.entities[0].x - this.x > 0) {
+                    this.frameIndex = (this.frameIndex + 1) % 2 + 8;
+                } else {
+                    this.frameIndex = (this.frameIndex + 1) % 2 + 6;
+                }
+            } else {
+                if (physicsWorld.entities[0].x - this.x > 0) {
+                    this.frameIndex = (this.frameIndex + 1) % 3 + 3;
+                } else {
+                    this.frameIndex = (this.frameIndex + 1) % 3;
+                }
+            }
+            this.animationTimer = 0;
+        }
+
+        // Play sound occasionally
+        if (Math.random() < 0.002 && !this.soundPlayed) { // Adjust the probability (0.01) as desired
+            this.playSound();
+            this.soundPlayed = true;
+        }
+
+        // Reset sound played flag
+        if (this.animationTimer >= this.animationSpeed - 16.67) {
+            this.soundPlayed = false;
+        }
+
+        if (physicsWorld.find_dist(physicsWorld.entities[0], this)) {
+            this.x += Math.sign(physicsWorld.entities[0].x - this.x) * 2;
+        }
+    };
+
+    this.soundURLs = [
+        "https://drive.google.com/uc?id=1aWXBzanteajWhmpcK4q0XQZQaiC9ooCX",
+        "https://drive.google.com/uc?id=18SB6SnRtcUtmQGLHmqn_LE8VkpLdYiaP"
+    ];
+
+    // Play the sound
+    this.playSound = function() {
+        var audio = new Audio(this.soundURLs[Math.floor(Math.random() * this.soundURLs.length)]);
+        audio.play();
+    };
+
+    // Render the local on the canvas
+    this.render = function() {
+        var frameX = this.frameIndex % this.framesPerRow;
+        var frameY = Math.floor(this.frameIndex / this.framesPerRow);
+
+        // Draw the current frame on the canvas
+        ctx.drawImage(
+            spriteImages.sylkens,
+            frameX * this.frameWidth,
+            frameY * this.frameHeight,
+            this.frameWidth,
+            this.frameHeight,
+            this.x,
+            this.y,
+            this.frameWidth,
+            this.frameHeight
+        );
+    };
+
+    // Activate kill mode
+    this.killMode = function() {
+        this.killModeActivated = true;
+    };
+
+    // Deactivate kill mode
+    this.deactivateKillMode = function() {
+        this.killModeActivated = false;
+    };
+}
+
   
 
   
