@@ -19,3 +19,18 @@
           sound.audio.pause();
           sound.audio.currentTime = 0;
         }
+        //audio player for background music
+        function playRandomBackgroundMusic() {
+          const category = 'backgroundmusic';
+          const numberOfSounds = soundEffects[category].length;
+          const randomIndex = Math.floor(Math.random() * numberOfSounds);
+        
+          playSoundEffect(category, randomIndex);
+        
+          soundEffects[category][randomIndex].audio.addEventListener('ended', () => {
+            setTimeout(() => {
+              stopSoundEffect(category, randomIndex);
+              playRandomBackgroundMusic();
+            }, 5000); // Wait 5 seconds before playing the next random background music
+          });
+        }
