@@ -435,96 +435,170 @@
             };
         }
 
-// The locals
-function sylken(x, y) {
-    this.x = x;
-    this.y = y;
-    this.frameIndex = 0;
-    this.framesPerRow = 10;
-    this.frameWidth = 200;
-    this.frameHeight = 100;
-    this.animationSpeed = 200; // Milliseconds per frame
-    this.animationTimer = 0;
-    this.id = "Sylken";
-    this.killModeActivated = false;
+        // The sylkens
+        function sylken(x, y, environment) {
+          this.x = x;
+          this.moving = true;
+          this.y = y;
+          this.frameIndex = 0;
+          this.framesPerRow = 10;
+          this.frameWidth = 200;
+          this.frameHeight = 100;
+          this.animationSpeed = 200; // Milliseconds per frame
+          this.animationTimer = 0;
 
-    // Update the local's animation
-    this.update = function() {
-        // Update animation timer
-        this.animationTimer += 16.67; // Approximate time between animation frames (60 FPS)
-        if (this.animationTimer >= this.animationSpeed) {
-            if (this.killModeActivated) {
-                if (physicsWorld.entities[0].x - this.x > 0) {
-                    this.frameIndex = (this.frameIndex + 1) % 2 + 8;
-                } else {
-                    this.frameIndex = (this.frameIndex + 1) % 2 + 6;
+          this.prey = ["purple wood local"]
+          this.id = "Sylken";
+          this.ent = environment
+          this.hunger = 0;
+
+          this.killModeActivated = false;
+          this.target = {x:this.x+100, y:100}
+          this.speed = 2;
+          this.img = new Image()
+          this.img.src = "https://drive.google.com/uc?id=1mcx1DKhDoF6JHrXqXopOZoMgndAwTe9W"
+
+          // Update the local's animation
+          this.update = function() {
+              // Update animation timer
+
+              this.maxHunger = 10;
+              // Increase hunger points
+              this.hunger += 0.01;
+
+
+
+              this.animationTimer += 16.67; // Approximate time between animation frames (60 FPS)
+              if(this.moving == true){
+                if (this.animationTimer >= this.animationSpeed) {
+                    if (this.killModeActivated) {
+                      this.speed = 3;
+                        if (this.target.x - (this.x+(this.frameWidth/2)) > 0) {
+                            this.frameIndex = (this.frameIndex + 1) % 2 + 8;
+                        } else {
+                            this.frameIndex = (this.frameIndex + 1) % 2 + 6;
+                        }
+                    } else {
+                      this.speed = 2;
+                        if (this.target.x - (this.x+(this.frameWidth/2)) > 0) {
+                            this.frameIndex = (this.frameIndex + 1) % 3 + 3;
+                        } else {
+                            this.frameIndex = (this.frameIndex + 1) % 3;
+                        }
+                    }
+                    this.animationTimer = 0;
                 }
-            } else {
-                if (physicsWorld.entities[0].x - this.x > 0) {
-                    this.frameIndex = (this.frameIndex + 1) % 3 + 3;
-                } else {
-                    this.frameIndex = (this.frameIndex + 1) % 3;
+              }
+
+              // Play sound occasionally
+              if (Math.random() < 0.002 && !this.soundPlayed) { // Adjust the probability (0.01) as desired
+                  //this.playSound();
+                  this.soundPlayed = true;
+              }
+
+              // Reset sound played flag
+              if (this.animationTimer >= this.animationSpeed - 16.67) {
+                  this.soundPlayed = false;
+              }
+
+              if (environment.find_dist(this.target, this)) {                  //100      //99
+                if(this.target.x-(this.x+this.frameWidth/2)<10 && this.target.x-(this.x+this.frameWidth/2)>-10){this.moving = false;}else{
+                  this.moving = true;
+                  this.x += Math.sign(this.target.x - (this.x+this.frameWidth/2)) * this.speed;  
+                }           
+                }
+
+                
+              // Check if hunger reaches the threshold
+              if (this.hunger >= this.maxHunger) {
+                // Search for prey
+                var nearestPrey = this.search();
+
+                if (nearestPrey) {
+                    // Activate kill mode and change target
+                    this.killMode();
+                    this.target = nearestPrey;
+                    
+                    // Calculate distance between predator and prey
+                    var distance = Math.sqrt(Math.pow(nearestPrey.x - this.x, 2) + Math.pow(nearestPrey.y - this.y, 2));
+                    
+                    // Check if distance is below 50
+                    if (distance < 50) {
+                        // Activate prey's death function and reduce predator's hunger
+                        nearestPrey=undefined
+                        this.hunger -= 20;
+                        this.killModeActivated = false;
+                        this.target = {x:this.x+(Math.random()*100), y:this.y+(Math.random()*100)}
+                    }
                 }
             }
-            this.animationTimer = 0;
+              
+              
+          };
+
+          this.search = function() {
+          // Find the nearest prey object
+          var nearestPrey = null;
+          var nearestDistance = Infinity;
+
+          for (var i = 0; i < environment.entities.length; i++) {
+              var entity = environment.entities[i];
+              
+              // Check if the entity is a valid prey
+              if (this.prey.includes(entity.id)) {
+                  var distance = Math.sqrt(Math.pow(entity.x - this.x, 2) + Math.pow(entity.y - this.y, 2));
+                  
+                  // Update the nearest prey if the distance is smaller
+                  if (distance < nearestDistance) {
+                      nearestPrey = entity;
+                      nearestDistance = distance;
+                  }
+              }
+          }
+
+          return nearestPrey;
+      };
+
+          this.soundURLs = [
+              "https://drive.google.com/uc?id=1aWXBzanteajWhmpcK4q0XQZQaiC9ooCX",
+              "https://drive.google.com/uc?id=18SB6SnRtcUtmQGLHmqn_LE8VkpLdYiaP"
+          ];
+
+          // Play the sound
+          this.playSound = function() {
+              var audio = new Audio(this.soundURLs[Math.floor(Math.random() * this.soundURLs.length)]);
+              audio.play();
+          };
+
+          // Render the local on the canvas
+          this.render = function() {
+              var frameX = this.frameIndex % this.framesPerRow;
+              var frameY = Math.floor(this.frameIndex / this.framesPerRow);
+
+              // Draw the current frame on the canvas
+              ctx.drawImage(
+                  this.img,
+                  frameX * this.frameWidth,
+                  frameY * this.frameHeight,
+                  this.frameWidth,
+                  this.frameHeight,
+                  this.x,
+                  this.y,
+                  this.frameWidth,
+                  this.frameHeight
+              );
+          };
+
+          // Activate kill mode
+          this.killMode = function() {
+              this.killModeActivated = true;
+          };
+
+          // Deactivate kill mode
+          this.deactivateKillMode = function() {
+              this.killModeActivated = false;
+          };
         }
-
-        // Play sound occasionally
-        if (Math.random() < 0.002 && !this.soundPlayed) { // Adjust the probability (0.01) as desired
-            this.playSound();
-            this.soundPlayed = true;
-        }
-
-        // Reset sound played flag
-        if (this.animationTimer >= this.animationSpeed - 16.67) {
-            this.soundPlayed = false;
-        }
-
-        if (physicsWorld.find_dist(physicsWorld.entities[0], this)) {
-            this.x += Math.sign(physicsWorld.entities[0].x - this.x) * 2;
-        }
-    };
-
-    this.soundURLs = [
-        "https://drive.google.com/uc?id=1aWXBzanteajWhmpcK4q0XQZQaiC9ooCX",
-        "https://drive.google.com/uc?id=18SB6SnRtcUtmQGLHmqn_LE8VkpLdYiaP"
-    ];
-
-    // Play the sound
-    this.playSound = function() {
-        var audio = new Audio(this.soundURLs[Math.floor(Math.random() * this.soundURLs.length)]);
-        audio.play();
-    };
-
-    // Render the local on the canvas
-    this.render = function() {
-        var frameX = this.frameIndex % this.framesPerRow;
-        var frameY = Math.floor(this.frameIndex / this.framesPerRow);
-
-        // Draw the current frame on the canvas
-        ctx.drawImage(
-            spriteImages.sylkens,
-            frameX * this.frameWidth,
-            frameY * this.frameHeight,
-            this.frameWidth,
-            this.frameHeight,
-            this.x,
-            this.y,
-            this.frameWidth,
-            this.frameHeight
-        );
-    };
-
-    // Activate kill mode
-    this.killMode = function() {
-        this.killModeActivated = true;
-    };
-
-    // Deactivate kill mode
-    this.deactivateKillMode = function() {
-        this.killModeActivated = false;
-    };
-}
 
   
 
