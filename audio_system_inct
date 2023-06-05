@@ -1,0 +1,21 @@
+       //deals with audio & caching
+        function preloadSoundEffects() {
+          for (const category in soundEffects) {
+            soundEffects[category].forEach(sound => {
+              sound.audio.preload = 'auto';
+              sound.audio.src = sound.url;
+            });
+          }
+        }
+        function playSoundEffect(category, index) {
+          const sound = soundEffects[category][index];
+          if (sound.audio.paused) {
+            sound.audio.currentTime = 0;
+          }
+          sound.audio.play();
+        }
+        function stopSoundEffect(category, index) {
+          const sound = soundEffects[category][index];
+          sound.audio.pause();
+          sound.audio.currentTime = 0;
+        }
