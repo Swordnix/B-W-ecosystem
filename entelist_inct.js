@@ -435,8 +435,8 @@
             };
         }
 
-        // The sylkens
-        function sylken(x, y, environment) {
+    // The sylkens
+    function sylken(x, y, environment) {
           this.x = x;
           this.moving = true;
           this.y = y;
@@ -466,8 +466,6 @@
               // Increase hunger points
               this.hunger += 0.01;
 
-
-
               this.animationTimer += 16.67; // Approximate time between animation frames (60 FPS)
               if(this.moving == true){
                 if (this.animationTimer >= this.animationSpeed) {
@@ -490,24 +488,13 @@
                 }
               }
 
-              // Play sound occasionally
-              if (Math.random() < 0.002 && !this.soundPlayed) { // Adjust the probability (0.01) as desired
-                  //this.playSound();
-                  this.soundPlayed = true;
-              }
-
-              // Reset sound played flag
-              if (this.animationTimer >= this.animationSpeed - 16.67) {
-                  this.soundPlayed = false;
-              }
-
               if (environment.find_dist(this.target, this)) {                  //100      //99
                 if(this.target.x-(this.x+this.frameWidth/2)<10 && this.target.x-(this.x+this.frameWidth/2)>-10){this.moving = false;}else{
                   this.moving = true;
                   this.x += Math.sign(this.target.x - (this.x+this.frameWidth/2)) * this.speed;  
                 }           
-                }
-
+              }
+              this.playSound()
                 
               // Check if hunger reaches the threshold
               if (this.hunger >= this.maxHunger) {
@@ -557,17 +544,17 @@
           }
 
           return nearestPrey;
-      };
+          };
 
-          this.soundURLs = [
-              "https://drive.google.com/uc?id=1aWXBzanteajWhmpcK4q0XQZQaiC9ooCX",
-              "https://drive.google.com/uc?id=18SB6SnRtcUtmQGLHmqn_LE8VkpLdYiaP"
-          ];
-
-          // Play the sound
+          // Play the sound occasionally
           this.playSound = function() {
-              var audio = new Audio(this.soundURLs[Math.floor(Math.random() * this.soundURLs.length)]);
-              audio.play();
+            if (Math.random() < 0.002 && !this.soundPlayed) {
+              const category = 'sylken';
+              const numberOfSounds = soundEffects[category].length;
+              const randomIndex = Math.floor(Math.random() * numberOfSounds);
+              playSoundEffect(category, randomIndex);
+              this.soundPlayed = true;
+            }
           };
 
           // Render the local on the canvas
@@ -599,6 +586,7 @@
               this.killModeActivated = false;
           };
         }
+
 
   
 
