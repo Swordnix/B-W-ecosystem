@@ -361,34 +361,23 @@
         this.frameIndex = (this.frameIndex + 1) % 4;
         this.animationTimer = 0;
         }
-        
-        // Play sound occasionally
-        if (Math.random() < 0.002 && !this.soundPlayed) { // Adjust the probability (0.01) as desired
-        this.playSound();
-        this.soundPlayed = true;
-        }
-        
-        // Reset sound played flag
-        if (this.animationTimer >= this.animationSpeed - 16.67) {
-        this.soundPlayed = false;
-        }
-        
+        this.playSound()
         if (physicsWorld.find_dist(physicsWorld.entities[0], this)) {
         this.x += Math.sign(physicsWorld.entities[0].x - this.x) * 2;
         }
     };
-            this.soundURLs = [
-            "https://drive.google.com/uc?id=1UELDV-ZeEjtc2EizgfLiEQB2xjeUfc3x",
-            "https://drive.google.com/uc?id=1Q63UDWxbJTxltBzeoZpPoQHEbwjNXHrg",
-            "https://drive.google.com/uc?id=1bS9prWC-Juqa7JIBgjfshcW3Sjg8_3mr"
-    
-            ]
-            // Play the sound
-            this.playSound = function() {
-            var audio = new Audio(this.soundURLs[Math.floor(Math.random()*this.soundURLs.length)]);
-            audio.play();
-            };    
-            // Render the local on the canvas
+        // Play the sound occasionally
+        this.playSound = function() {
+          if (Math.random() < 0.002 && !this.soundPlayed) {
+            const category = 'sylken';
+            const numberOfSounds = soundEffects[category].length;
+            const randomIndex = Math.floor(Math.random() * numberOfSounds);
+            playSoundEffect(category, randomIndex);
+            this.soundPlayed = true;
+            console.log("sound_playedII")
+          }
+        };
+           //render the local on the canvas
             this.render = function() {
             var frameX = this.frameIndex % this.framesPerRow;
             var frameY = Math.floor(this.frameIndex / this.framesPerRow);
