@@ -96,7 +96,7 @@
     };
 
 // Initialize the ConsoleBar object
-ConsoleBar.initialize();
+//ConsoleBar.initialize();
 
 // Add the console container to the document body
-document.body.appendChild(ConsoleBar.container);
+//document.body.appendChild(ConsoleBar.container);
