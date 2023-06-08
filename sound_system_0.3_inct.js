@@ -12,14 +12,18 @@ function playSoundEffect(category, index) {
   const sound = soundEffects[category][index];
   if (sound.audio.paused) {
     sound.audio.currentTime = 0;
+    sound.audio.play().catch(error => {
+      console.error('Error occurred while playing sound effect:', error);
+    });
   }
-  sound.audio.play();
 }
 
 function stopSoundEffect(category, index) {
   const sound = soundEffects[category][index];
-  sound.audio.pause();
-  sound.audio.currentTime = 0;
+  if (!sound.audio.paused) {
+    sound.audio.pause();
+    sound.audio.currentTime = 0;
+  }
 }
 
 let isBackgroundMusicPlaying = false; // New flag to track the state of background music
@@ -41,9 +45,10 @@ function playRandomBackgroundMusic() {
       stopSoundEffect(category, randomIndex);
       isBackgroundMusicPlaying = false; // Reset the flag when the background music ends
       playRandomBackgroundMusic();
-    }, 10000); // Wait 5 seconds before playing the next random background music
+    }, 5000); // Wait 5 seconds before playing the next random background music
   });
 }
+
 
 
       /*requirements.jssi
