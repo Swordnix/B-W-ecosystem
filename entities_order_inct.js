@@ -208,6 +208,44 @@
             );
             };
         }
+
+        // Define the scarlet_stinger object
+        function scarlet_stinger(x, y) {
+            this.x = x;
+            this.y = y;
+            this.frameIndex = 0;
+            this.framesPerRow = 1;
+            this.frameWidth = 256;
+            this.frameHeight = 256;
+            this.animationSpeed = 200; // Milliseconds per frame
+            this.animationTimer = 0;
+            this.id = "scarlet_stinger";
+            this.img = new Image()
+            this.img.src = "https://drive.google.com/uc?id=1aSaZo3aicAnXrR1678NqTG7lZlIKI-xt"
+
+            // Update the scarlet_stinger's animation
+            this.update = function() {
+                // Update animation timer
+                this.animationTimer += 16.67; // Approximate time between animation frames (60 FPS)
+                if (this.animationTimer >= this.animationSpeed) {
+                    this.frameIndex = (this.frameIndex + 1) % this.framesPerRow;
+                    this.animationTimer = 0;
+                }
+            };
+
+            // Render the scarlet_stinger on the canvas
+            this.render = function() {
+                // Draw the current frame on the canvas
+                ctx.drawImage(
+                    this.img,
+                    this.x,
+                    this.y,
+                    this.frameWidth,
+                    this.frameHeight
+                );
+            };
+        }
+
     
         // Define the Outreacher object
         function Outreacher(x, y) {
