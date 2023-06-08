@@ -19,21 +19,28 @@
         sound.audio.pause();
         sound.audio.currentTime = 0;
       }
-      //audio player for background music
-      function playRandomBackgroundMusic() {
-        const category = 'backgroundmusic';
-        const numberOfSounds = soundEffects[category].length;
-        const randomIndex = Math.floor(Math.random() * numberOfSounds);
-      
-        playSoundEffect(category, randomIndex);
-      
-        soundEffects[category][randomIndex].audio.addEventListener('ended', () => {
-          setTimeout(() => {
-            stopSoundEffect(category, randomIndex);
-            playRandomBackgroundMusic();
-          }, 5000); // Wait 5 seconds before playing the next random background music
-        });
-      }
+       let isBackgroundMusicPlaying = false; // New flag to track the state of background music
+
+       function playRandomBackgroundMusic() {
+         if (isBackgroundMusicPlaying) {
+           return; // Return early if background music is already playing
+         }
+
+         const category = 'backgroundmusic';
+         const numberOfSounds = soundEffects[category].length;
+         const randomIndex = Math.floor(Math.random() * numberOfSounds);
+
+         isBackgroundMusicPlaying = true; // Set the flag to indicate that background music is playing
+         playSoundEffect(category, randomIndex);
+
+         soundEffects[category][randomIndex].audio.addEventListener('ended', () => {
+           setTimeout(() => {
+             stopSoundEffect(category, randomIndex);
+             isBackgroundMusicPlaying = false; // Reset the flag when the background music ends
+             playRandomBackgroundMusic();
+           }, 5000); // Wait 5 seconds before playing the next random background music
+         });
+       }
 
       /*requirements.jssi
         const soundEffects  = {
