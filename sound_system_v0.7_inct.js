@@ -86,13 +86,18 @@ function playRandomBackgroundMusic() {
   });
 
   audio.play().catch((error) => {
-    console.error('Error occurred while playing background music:', error);
-    isBackgroundMusicPlaying = false; // Reset the flag on error
+    if (error.name === 'NotAllowedError') {
+      console.warn('Playback was prevented due to autoplay restrictions.');
+      isBackgroundMusicPlaying = false; // Reset the flag if autoplay is not allowed
+    } else {
+      console.error('Error occurred while playing background music:', error);
+      isBackgroundMusicPlaying = false; // Reset the flag on error
 
-    // Attempt to play the next random background music
-    setTimeout(() => {
-      playRandomBackgroundMusic();
-    }, 1000); // Wait 1 second before playing the next random background music
+      // Attempt to play the next random background music
+      setTimeout(() => {
+        playRandomBackgroundMusic();
+      }, 1000); // Wait 1 second before playing the next random background music
+    }
   });
 }
 
