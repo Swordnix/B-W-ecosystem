@@ -41,7 +41,7 @@ function playRandomBackgroundMusic() {
       stopSoundEffect(category, randomIndex);
       isBackgroundMusicPlaying = false; // Reset the flag when the background music ends
       playRandomBackgroundMusic();
-    }, 5000); // Wait 5 seconds before playing the next random background music
+    }, 10000); // Wait 5 seconds before playing the next random background music
   });
 }
 
