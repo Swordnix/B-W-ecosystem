@@ -33,6 +33,8 @@ function stopSoundEffect(category, index) {
   }
 }
 
+// Flag to track the state of background music
+let isBackgroundMusicPlaying = false;
 // Function to play random background music
 function playRandomBackgroundMusic() {
   // Check if background music is already playing
