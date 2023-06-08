@@ -33,9 +33,28 @@ function stopSoundEffect(category, index) {
   }
 }
 
-let isBackgroundMusicPlaying = false; // New flag to track the state of background music
+// Flag to track the state of background music
+let isBackgroundMusicPlaying = false;
 
+// Function to play a sound effect
+function playSoundEffect(category, index) {
+  const sound = soundEffects[category][index];
+  if (sound.audio.paused) {
+    sound.audio.currentTime = 0;
+  }
+  sound.audio.play();
+}
+
+// Function to stop a sound effect
+function stopSoundEffect(category, index) {
+  const sound = soundEffects[category][index];
+  sound.audio.pause();
+  sound.audio.currentTime = 0;
+}
+
+// Function to play random background music
 function playRandomBackgroundMusic() {
+  // Check if background music is already playing
   if (isBackgroundMusicPlaying) {
     return; // Return early if background music is already playing
   }
@@ -45,15 +64,23 @@ function playRandomBackgroundMusic() {
   const randomIndex = Math.floor(Math.random() * numberOfSounds);
 
   isBackgroundMusicPlaying = true; // Set the flag to indicate that background music is playing
-  playSoundEffect(category, randomIndex);
 
-  soundEffects[category][randomIndex].audio.addEventListener('ended', () => {
+  const audio = soundEffects[category][randomIndex].audio;
+
+  audio.addEventListener('error', (event) => {
+    console.error('Error occurred while playing background music:', event.target.error);
+    isBackgroundMusicPlaying = false; // Reset the flag on error
+  });
+
+  audio.addEventListener('ended', () => {
     setTimeout(() => {
       stopSoundEffect(category, randomIndex);
       isBackgroundMusicPlaying = false; // Reset the flag when the background music ends
       playRandomBackgroundMusic();
     }, 5000); // Wait 5 seconds before playing the next random background music
   });
+
+  playSoundEffect(category, randomIndex);
 }
 
 
