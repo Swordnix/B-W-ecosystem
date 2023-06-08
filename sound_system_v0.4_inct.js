@@ -15,6 +15,13 @@ function playSoundEffect(category, index) {
     sound.audio.play().catch(error => {
       console.error('Error occurred while playing sound effect:', error);
     });
+  } else {
+    sound.audio.addEventListener('ended', () => {
+      sound.audio.currentTime = 0;
+      sound.audio.play().catch(error => {
+        console.error('Error occurred while playing sound effect:', error);
+      });
+    });
   }
 }
 
@@ -48,6 +55,7 @@ function playRandomBackgroundMusic() {
     }, 5000); // Wait 5 seconds before playing the next random background music
   });
 }
+
 
 
 
