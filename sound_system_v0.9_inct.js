@@ -33,25 +33,6 @@ function stopSoundEffect(category, index) {
   }
 }
 
-// Flag to track the state of background music
-let isBackgroundMusicPlaying = false;
-
-// Function to play a sound effect
-function playSoundEffect(category, index) {
-  const sound = soundEffects[category][index];
-  if (sound.audio.paused) {
-    sound.audio.currentTime = 0;
-  }
-  sound.audio.play();
-}
-
-// Function to stop a sound effect
-function stopSoundEffect(category, index) {
-  const sound = soundEffects[category][index];
-  sound.audio.pause();
-  sound.audio.currentTime = 0;
-}
-
 // Function to play random background music
 function playRandomBackgroundMusic() {
   // Check if background music is already playing
@@ -85,21 +66,29 @@ function playRandomBackgroundMusic() {
     }, 5000); // Wait 5 seconds before playing the next random background music
   });
 
-  audio.play().catch((error) => {
-    if (error.name === 'NotAllowedError') {
-      console.warn('Playback was prevented due to autoplay restrictions.');
-      isBackgroundMusicPlaying = false; // Reset the flag if autoplay is not allowed
-    } else {
-      console.error('Error occurred while playing background music:', error);
-      isBackgroundMusicPlaying = false; // Reset the flag on error
+  // Check if the audio is already playing
+  if (audio.paused) {
+    audio.play().catch((error) => {
+      if (error.name === 'NotAllowedError') {
+        console.warn('Playback was prevented due to autoplay restrictions.');
+      } else {
+        console.error('Error occurred while playing background music:', error);
+        isBackgroundMusicPlaying = false; // Reset the flag on error
+      }
 
       // Attempt to play the next random background music
       setTimeout(() => {
         playRandomBackgroundMusic();
       }, 1000); // Wait 1 second before playing the next random background music
-    }
-  });
+    });
+  } else {
+    // The audio is already playing, so start the next random background music
+    stopSoundEffect(category, randomIndex);
+    isBackgroundMusicPlaying = false; // Reset the flag
+    playRandomBackgroundMusic();
+  }
 }
+
 
 
 
