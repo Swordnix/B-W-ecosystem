@@ -70,6 +70,11 @@ function playRandomBackgroundMusic() {
   audio.addEventListener('error', (event) => {
     console.error('Error occurred while playing background music:', event.target.error);
     isBackgroundMusicPlaying = false; // Reset the flag on error
+
+    // Attempt to play the next random background music
+    setTimeout(() => {
+      playRandomBackgroundMusic();
+    }, 1000); // Wait 1 second before playing the next random background music
   });
 
   audio.addEventListener('ended', () => {
@@ -80,8 +85,17 @@ function playRandomBackgroundMusic() {
     }, 5000); // Wait 5 seconds before playing the next random background music
   });
 
-  playSoundEffect(category, randomIndex);
+  audio.play().catch((error) => {
+    console.error('Error occurred while playing background music:', error);
+    isBackgroundMusicPlaying = false; // Reset the flag on error
+
+    // Attempt to play the next random background music
+    setTimeout(() => {
+      playRandomBackgroundMusic();
+    }, 1000); // Wait 1 second before playing the next random background music
+  });
 }
+
 
 
 
