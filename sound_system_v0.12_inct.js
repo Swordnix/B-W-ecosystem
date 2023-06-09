@@ -33,63 +33,64 @@ function stopSoundEffect(category, index) {
   }
 }
 
+function shutDownAudio() {
+  isAudioEnabled = false;
+  stopSoundEffect('backgroundmusic', 0); // Stop the currently playing background music, if any
+
+  // Add code to stop all other sounds or audio elements
+}
 // Flag to track the state of background music
 let isBackgroundMusicPlaying = false;
-// Function to play random background music
 function playRandomBackgroundMusic() {
-  // Check if background music is already playing
   if (isBackgroundMusicPlaying) {
-    return; // Return early if background music is already playing
+    return;
   }
 
   const category = 'backgroundmusic';
   const numberOfSounds = soundEffects[category].length;
   const randomIndex = Math.floor(Math.random() * numberOfSounds);
 
-  isBackgroundMusicPlaying = true; // Set the flag to indicate that background music is playing
+  isBackgroundMusicPlaying = true;
 
   const audio = soundEffects[category][randomIndex].audio;
 
   audio.addEventListener('error', (event) => {
     console.error('Error occurred while playing background music:', event.target.error);
-    isBackgroundMusicPlaying = false; // Reset the flag on error
+    isBackgroundMusicPlaying = false;
 
-    // Attempt to play the next random background music
     setTimeout(() => {
       playRandomBackgroundMusic();
-    }, 1000); // Wait 1 second before playing the next random background music
+    }, 1000);
   });
 
   audio.addEventListener('ended', () => {
     setTimeout(() => {
       stopSoundEffect(category, randomIndex);
-      isBackgroundMusicPlaying = false; // Reset the flag when the background music ends
+      isBackgroundMusicPlaying = false;
       playRandomBackgroundMusic();
-    }, 5000); // Wait 5 seconds before playing the next random background music
+    }, 5000);
   });
 
-  // Check if the audio is already playing
   if (audio.paused) {
     audio.play().catch((error) => {
       if (error.name === 'NotAllowedError') {
         console.warn('Playback was prevented due to autoplay restrictions.');
       } else {
         console.error('Error occurred while playing background music:', error);
-        isBackgroundMusicPlaying = false; // Reset the flag on error
+        isBackgroundMusicPlaying = false;
       }
 
-      // Attempt to play the next random background music
       setTimeout(() => {
         playRandomBackgroundMusic();
-      }, 5000); // Wait 1 second before playing the next random background music
+      }, 5000);
     });
   } else {
-    // The audio is already playing, so start the next random background music
-    stopSoundEffect(category, randomIndex);
-    isBackgroundMusicPlaying = false; // Reset the flag
+    stopSoundEffect(category, randomIndex); // Stop the currently playing background music
+    isBackgroundMusicPlaying = false;
     playRandomBackgroundMusic();
   }
 }
+
 
 
 
