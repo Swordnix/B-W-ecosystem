@@ -81,7 +81,7 @@ function playRandomBackgroundMusic() {
       // Attempt to play the next random background music
       setTimeout(() => {
         playRandomBackgroundMusic();
-      }, 1000); // Wait 1 second before playing the next random background music
+      }, 5000); // Wait 1 second before playing the next random background music
     });
   } else {
     // The audio is already playing, so start the next random background music
