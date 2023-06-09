@@ -490,7 +490,7 @@
             this.update = function() {
                 // Update animation timer
     
-                this.maxHunger = 5;
+                this.maxHunger = 2;
                 // Increase hunger points
                 this.hunger += 0.01;
     
