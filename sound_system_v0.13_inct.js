@@ -36,6 +36,8 @@ function stopSoundEffect(category, index) {
 function shutDownAudio() {
   isAudioEnabled = false;
   stopSoundEffect('backgroundmusic', 0); // Stop the currently playing background music, if any
+  stopSoundEffect('backgroundmusic', 1);
+  stopSoundEffect('backgroundmusic', 2);
 
   // Add code to stop all other sounds or audio elements
 }
